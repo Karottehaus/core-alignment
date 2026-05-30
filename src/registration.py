@@ -1,11 +1,12 @@
 import cv2
 import numpy as np
+from settings import COARSE_SCALE, PAD, MIN_INLIERS, MAX_REFINE_SIZE
 
 
 class ImageRegistration:
 
-    def register(self, reference, moving, coarse_scale=0.25,
-                 pad=128, min_inliers=30, max_refine_size=1400):
+    def register(self, reference, moving, coarse_scale=COARSE_SCALE,
+                 pad=PAD, min_inliers=MIN_INLIERS, max_refine_size=MAX_REFINE_SIZE):
 
         homography, info = self._estimate_partial_homography(reference, moving, coarse_scale=coarse_scale,
                                                              min_inliers=min_inliers)
@@ -20,7 +21,7 @@ class ImageRegistration:
 
         return refined_aligned_full, refined_mask_full, homography, info, bbox
 
-    def _estimate_partial_homography(self, reference, moving, coarse_scale=0.25, min_inliers=30):
+    def _estimate_partial_homography(self, reference, moving, coarse_scale, min_inliers):
         ref_small = cv2.resize(reference, None, fx=coarse_scale, fy=coarse_scale, interpolation=cv2.INTER_AREA)
         mov_small = cv2.resize(moving, None, fx=coarse_scale, fy=coarse_scale, interpolation=cv2.INTER_AREA)
         ref_gray = cv2.cvtColor(ref_small, cv2.COLOR_BGR2GRAY)
@@ -108,7 +109,7 @@ class ImageRegistration:
         return y0, x0, y1, x1
 
     def _refine_with_optical_flow(self, reference, aligned, mask,
-                                  bbox, max_refine_size=1400):
+                                  bbox, max_refine_size):
         y0, x0, y1, x1 = bbox
         reference_crop = reference[y0:y1, x0:x1]
         aligned_crop = aligned[y0:y1, x0:x1]
