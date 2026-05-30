@@ -2,6 +2,7 @@ from pathlib import Path
 import cv2
 from src.registration import ImageRegistration
 from utils.tools import checkerboard
+from settings import NUM_TILES
 
 REFERENCE_PATH = Path("img/GRF_RGB_revised.tiff")
 MOVING_PATH = Path("img/GRF_RGB_U_revised.tiff")
@@ -23,7 +24,7 @@ if __name__ == "__main__":
     cv2.imwrite(str(OUTPUT_PATH / "aligned_u.tiff"), refined_aligned_full)
     cv2.imwrite(str(OUTPUT_PATH / "aligned_u_mask.tiff"), refined_mask_full)
 
-    checker = checkerboard(crop_to_bbox(reference, bbox), crop_to_bbox(refined_aligned_full, bbox), n=12)
+    checker = checkerboard(crop_to_bbox(reference, bbox), crop_to_bbox(refined_aligned_full, bbox), num_tiles=NUM_TILES)
     cv2.imwrite(str(OUTPUT_PATH / "checkerboard.tiff"), checker)
 
     print(f"homography:\n{homography}")
