@@ -11,6 +11,9 @@ class ImageRegistration:
         homography, info = self._estimate_partial_homography(reference, moving, coarse_scale=coarse_scale,
                                                              min_inliers=min_inliers)
 
+        if homography is None:
+            return None, None, None, info, None
+
         aligned, mask = self._warp_homography(moving, reference.shape, homography)
         bbox = self._mask_bbox(mask, pad=pad, image_shape=reference.shape[:2])
 
